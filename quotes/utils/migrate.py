@@ -1,3 +1,4 @@
+'''
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "quotes.settings")
 
@@ -8,17 +9,19 @@ from pymongo import MongoClient
 
 from quotesapp.models import Author, Quote, Tag
 
-import configparser
+import environ
+from pathlib import Path
 
-config = configparser.ConfigParser()
-config.read('config.ini')
+BASE_DIR = Path(__file__).resolve().parent.parent
+env = environ.Env()
+environ.Env.read_env(BASE_DIR / '.env')
 
-mongo_user = config.get('DB', 'user')
-mongodb_pass = config.get('DB', 'pass')
-db_name = config.get('DB', 'db_name')
-domain = config.get('DB', 'domain')
+mongo_user = env('USER')
+mongodb_pass = env('PASS')
+db_name = env('db_name')
+domain = env('domain')
 
-
+print(db_name)
 
 
 client = MongoClient(f"mongodb+srv://{mongo_user}:{mongodb_pass}@{domain}/")
@@ -52,3 +55,5 @@ for quote in quotes:
 
         for tag in tags:
             q.tags.add(tag)
+
+'''
